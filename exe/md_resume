@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+require 'resume_generator'
+require 'parser'
+require 'local-server'
+
+parser = Parser.new
+opts = parser.parse(ARGV)
+
+command = ARGV.shift
+resume = ARGV.shift
+
+if resume.nil?
+  puts parser.args
+  exit
+end
+
+resume = File.expand_path(resume)
+opts.input = resume
+generator = ResumeGenerator.new(opts)
+server = Server.new(opts)
+
+case command
+when 'serve'
+  server.start
+when 'build'
+  generator.write
+when 'generate'
+  generator.write_template
+else
+  puts parser.args
+end
