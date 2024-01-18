@@ -5,7 +5,7 @@ require 'parser'
 require 'local-server'
 
 parser = Parser.new
-opts = parser.parse(ARGV)
+cli_opts = parser.parse(ARGV)
 
 command = ARGV.shift
 resume = ARGV.shift
@@ -16,16 +16,18 @@ if resume.nil?
 end
 
 resume = File.expand_path(resume)
-opts.input = resume
-generator = ResumeGenerator.new(opts)
-server = Server.new(opts)
+cli_opts.input = resume
 
 case command
 when 'serve'
+  generator = ResumeGenerator.new(cli_opts, is_cli: false)
+  server = Server.new(generator, cli_opts)
   server.start
 when 'build'
+  generator = ResumeGenerator.new(cli_opts)
   generator.write
 when 'generate'
+  generator = ResumeGenerator.new(cli_opts)
   generator.write_template
 else
   puts parser.args

@@ -33,11 +33,7 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
-  spec.add_dependency 'foreman', '~> 0.87'
-  spec.add_dependency 'guard', '~> 2.18'
-  spec.add_dependency 'guard-livereload', '~> 2.5'
-  spec.add_dependency 'guard-process', '~> 1.0'
-  spec.add_dependency 'guard-shell', '~> 0.7'
+  spec.add_dependency 'filewatcher', '~> 2.1'
   spec.add_dependency 'kramdown', '~> 2.4'
   spec.add_dependency 'webrick', '~> 1.8'
 

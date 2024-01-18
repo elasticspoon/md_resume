@@ -34,9 +34,10 @@ class ResumeGenerator
 
   LINUX_CHROME_EXECUTABLES = %w[google-chrome chrome chromium chromium-browser].freeze
 
-  def initialize(opts)
-    @opts = opts
+  def initialize(cli_opts, is_cli: true)
+    @opts = cli_opts
     @opts.chrome_path = guess_chrome_path if @opts.pdf && @opts.chrome_path.nil?
+    set_server_opts unless is_cli
   end
 
   def write
@@ -107,7 +108,7 @@ class ResumeGenerator
 
   def to_html
     markdown = File.read(opts.input)
-    @html ||= make_html(markdown, css_file: opts.css_path)
+    make_html(markdown, css_file: opts.css_path)
   end
 
   def to_pdf
@@ -191,7 +192,7 @@ class ResumeGenerator
   end
 
   def write_html
-    File.write(opts.html_path, to_html) if opts.html
+    File.write(opts.html_path, to_html, mode: 'w') if opts.html
   rescue Errno::ENOENT => e
     raise e unless e.message =~ /No such file or directory/
 
@@ -205,5 +206,12 @@ class ResumeGenerator
 
   def create_output_dir(path)
     FileUtils.mkdir_p(File.dirname(path))
+  end
+
+  def set_server_opts
+    opts.html_path = Pathname.new(Dir.pwd).join('tmp/resume.html')
+    opts.html = true
+    opts.pdf = false
+    opts.verbose = true
   end
 end

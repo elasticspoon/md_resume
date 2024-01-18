@@ -1,65 +1,34 @@
 require 'webrick'
+require 'filewatcher'
 
 class Server
-  attr_reader :opts
+  attr_reader :opts, :generator
 
-  def initialize(opts)
-    @opts = opts
+  def initialize(generator, cli_opts)
+    @opts = cli_opts
+    @generator = generator
   end
 
   def start
-    if opts.serve_only
-      start_local_server
-    else
-      foreman_start
+    watch_files
+    start_local_server
+  end
+
+  def filewatcher
+    @filewatcher ||= Filewatcher.new([opts.input, opts.css_path])
+  end
+
+  def watch_files
+    generator.send(:write_html)
+    @thread = Thread.new(filewatcher) do |fw|
+      fw.watch do |change|
+        puts "Change detected: #{change}"
+        generator.send(:write_html)
+      end
     end
   ensure
-    FileUtils.rm_rf('tmp')
-  end
-
-  def create_guardfile
-    guardfile = <<~GUARDFILE
-      guard 'process', :name => 'Rebuild Dev Site', :command => 'md_resume build #{opts.input} --no-pdf --html-path tmp/resume.html', :stop_signal => "KILL"  do
-        watch(%r{#{opts.input}})
-        watch(%r{#{opts.css_path}})
-      end
-    GUARDFILE
-
-    livereload = <<~LIVERELOAD
-      guard 'livereload' do
-        watch(#{opts.input})
-        watch(%r{tmp/resume.html})
-      end
-    LIVERELOAD
-    File.write('tmp/Guardfile', guardfile)
-    File.write('tmp/Guardfile', livereload, { mode: 'a' }) if opts.live_reload
-  end
-
-  def create_tmp_dir
-    FileUtils.mkdir_p('tmp')
-  end
-
-  def foreman_start
-    create_tmp_dir
-    create_guardfile
-    create_procfile
-
-    exec 'foreman start -f tmp/Procfile'
-  rescue Errno::EEXIST => e
-    puts "Error: #{e.message}"
-  end
-
-  def guardfile_path
-    @guardfile_path ||= File.expand_path './tmp/Guardfile'
-  end
-
-  def create_procfile
-    procfile = <<~PROCFILE
-      live-server: md_resume serve #{opts.input} --serve-only --html-path tmp/resume.html
-      guard-watch: bundle exec guard -w #{File.dirname(opts.input)} -G #{guardfile_path}
-    PROCFILE
-
-    File.write('tmp/Procfile', procfile)
+    filewatcher.stop
+    @thread.kill
   end
 
   def start_local_server
