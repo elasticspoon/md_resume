@@ -15,6 +15,7 @@ class Server
   end
 
   def filewatcher
+    puts "watching #{opts.input} and #{opts.css_path}" if opts.verbose
     @filewatcher ||= Filewatcher.new([opts.input, opts.css_path])
   end
 
@@ -22,18 +23,16 @@ class Server
     generator.send(:write_html)
     @thread = Thread.new(filewatcher) do |fw|
       fw.watch do |change|
-        puts "Change detected: #{change}"
+        puts "Change detected: #{change}" if opts.verbose
         generator.send(:write_html)
       end
     end
-  ensure
-    filewatcher.stop
-    @thread.kill
   end
 
   def start_local_server
+    puts "Starting local server on port #{opts.port}"
     root = opts.html_path
-    server = WEBrick::HTTPServer.new Port: 8000, DocumentRoot: root
+    server = WEBrick::HTTPServer.new(Port: opts.port, DocumentRoot: root)
 
     trap 'INT' do server.shutdown end
 

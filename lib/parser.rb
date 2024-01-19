@@ -3,8 +3,8 @@ require 'pathname'
 
 class Parser
   class ScriptOptions
-    attr_accessor :chrome_path, :html, :pdf, :css_path, :pdf_path, :html_path, :verbose, :live_reload, :input,
-                  :serve_only
+    attr_accessor :chrome_path, :html, :pdf, :css_path, :pdf_path, :html_path, :verbose, :input,
+                  :serve_only, :port
 
     def initialize
       self.chrome_path = nil
@@ -14,9 +14,9 @@ class Parser
       self.pdf_path = Pathname.new('resume.pdf').expand_path
       self.html_path = Pathname.new('resume.html').expand_path
       self.verbose = false
-      self.live_reload = false
       self.serve_only = false
       self.input = nil
+      self.port = 3000
     end
 
     def define_options(parser)
@@ -36,7 +36,7 @@ class Parser
       specify_output_pdf_option(parser)
       specify_output_html_option(parser)
       specify_input_css_option(parser)
-      boolean_live_reload_option(parser)
+      specify_server_port_option(parser)
       boolean_serve_only_option(parser)
       boolean_verbosity_option(parser)
       parser.separator ''
@@ -78,17 +78,18 @@ class Parser
       end
     end
 
-    def boolean_verbosity_option(parser)
-      parser.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
-        self.verbose = v
+    def specify_server_port_option(parser)
+      parser.on('--server-port=PORT', 'Specify the localhost port number for the server') do |port|
+        port = port.to_i
+        raise OptionParser::InvalidArgument unless (1..65_535).cover?(port)
+
+        self.port = port
       end
     end
 
-    def boolean_live_reload_option(parser)
-      # Boolean switch.
-      parser.on('--live-reload', 'Start a live dev-server using foreman', 'This rebuild your html output and use livereload to refresh your browser',
-                'You will need the livereload browser extension for the reloading to work') do |v|
-        self.live_reload = v
+    def boolean_verbosity_option(parser)
+      parser.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
+        self.verbose = v
       end
     end
 

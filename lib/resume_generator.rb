@@ -10,9 +10,12 @@ class ResumeGenerator
   ValueError = Class.new(StandardError)
 
   POSTAMBLE = <<~POSTAMBLE.freeze
-    </div>
-    </body>
-    </html>
+      </div>
+      </body>
+      <script>
+    #{File.read(File.expand_path('../assets/reload.js', __dir__))}
+      </script>
+      </html>
   POSTAMBLE
 
   CHROME_GUESSES_MACOS = [
@@ -157,6 +160,7 @@ class ResumeGenerator
       <html lang="en">
       <head>
       <meta charset="UTF-8">
+      <meta property="time_built" content="#{Time.now.iso8601}">
       <title>#{title}</title>
       <style>
       #{css}
@@ -178,6 +182,10 @@ class ResumeGenerator
           'Cannot find any lines that look like markdown h1 headings to use as the title'
   end
 
+  def reload_script
+    File.read(File.expand_path('assets/reload.js', __dir__))
+  end
+
   def make_html(markdown, css_file: nil)
     title = title(markdown)
     html = Kramdown::Document.new(markdown).to_html
@@ -192,6 +200,7 @@ class ResumeGenerator
   end
 
   def write_html
+    puts "Writing HTML to #{opts.html_path}"
     File.write(opts.html_path, to_html, mode: 'w') if opts.html
   rescue Errno::ENOENT => e
     raise e unless e.message =~ /No such file or directory/
