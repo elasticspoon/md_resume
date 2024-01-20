@@ -27,6 +27,7 @@ class Server
     @thread = Thread.new(filewatcher) do |fw|
       fw.watch do |change|
         puts "Change detected: #{change}" if opts.verbose
+        # TODO: change this to use exposed methods
         generator.send(:write_html)
         @needs_reload = true
       end

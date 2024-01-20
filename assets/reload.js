@@ -9,16 +9,16 @@ function reload() {
     });
 }
 
-async function pollServer() {
-  try {
-    console.log("Polling server...");
-    let response = await fetch("http://localhost:12345/");
-    reload();
-    pollServer();
-  } catch (err) {
-    console.log(err);
-    console.log("Server not ready. Reload the page with the server running.");
-  }
+function pollServer() {
+  fetch("http://localhost:12345/")
+    .then(() => {
+      reload();
+      pollServer();
+    })
+    .catch((err) => {
+      console.log(err);
+      console.log("Server not ready. Reload the page with the server running.");
+    });
 }
 
 pollServer();
