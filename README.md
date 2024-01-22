@@ -1,24 +1,56 @@
-# MdResume
+# md_resume
 
-TODO: Delete this and the text below, and describe your gem
+![Resume](resume.png)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/md_resume`. To experiment with that code, run `bin/console` for an interactive prompt.
+Write your resume in [Markdown](https://raw.githubusercontent.com/mikepqr/resume.md/main/resume.md), style it with [CSS](resume.css), output to [HTML](resume.html) and [PDF](resume.pdf). Open a your resume in the browser and watch it update live with changes made to the markdown.
+
+## Prerequisites
+
+- Ruby ≥ 3.0
+- Optional, required for PDF output: Google Chrome or Chromium
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
-Install the gem and add to the application's Gemfile by executing:
-
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+```bash
+gem install md_resume
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+Usage: md_resume command filename [options…]
+
+Commands:
+serve         Start a local server to preview your resume
+build         Build your resume in html and pdf formats.
+generate      Generate a template with given name (defaults to markdown)
+
+Specific options:
+        --chrome-path=PATH      Path to Chrome executable
+        --no-pdf                Do not write pdf output
+        --no-html               Do not write html output
+    -p, --pdf-path=PATH         Path of pdf output
+    -h, --html-path=PATH        Path of html output
+        --css-path=PATH         Path of css inputs.
+        --server-port=PORT      Specify the localhost port number for the server
+        --serve-only
+    -v, --[no-]verbose          Run verbosely
+
+Common options:
+        --help Show this message
+```
+
+## Customization
+
+You can generate the default style sheet with `md_resume generate-css FILENAME`. The default style is extremely generic, which is perhaps what you want in a resume,
+but CSS gives you a lot of flexibility. See, e.g. [The Tech Resume Inside-Out](https://www.thetechinterview.com/) for good advice about what a resume should look like (and what it should say).
+
+Change the appearance of the PDF version (without affecting the HTML version) by adding rules under the `@media print` CSS selector.
+Change the margins and paper size of the PDF version by editing the [`@page` CSS rule](https://developer.mozilla.org/en-US/docs/Web/CSS/%40page/size).
+
+## Note
+
+The idea for the project is based off of https://github.com/mikepqr/resume.md. I could not get python to play nice so I rewrote it in Ruby and added features.
 
 ## Development
 
@@ -28,7 +60,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/md_resume.
+Bug reports and pull requests are welcome on GitHub at https://github.com/elasticspoon/md_resume.
 
 ## License
 
