@@ -1,6 +1,6 @@
 # md_resume
 
-![Resume](resume.png)
+![](resume.png)
 
 Write your resume in [Markdown](https://raw.githubusercontent.com/mikepqr/resume.md/main/resume.md), style it with [CSS](resume.css), output to [HTML](resume.html) and [PDF](resume.pdf). Open a your resume in the browser and watch it update live with changes made to the markdown.
 
