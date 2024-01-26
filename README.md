@@ -1,6 +1,6 @@
 # md_resume
 
-![](resume.png)
+https://github.com/elasticspoon/md_resume/assets/14540596/d5034437-2842-4974-bffb-dbeacc742030
 
 Write your resume in [Markdown](https://raw.githubusercontent.com/mikepqr/resume.md/main/resume.md), style it with [CSS](resume.css), output to [HTML](resume.html) and [PDF](resume.pdf). Open a your resume in the browser and watch it update live with changes made to the markdown.
 
