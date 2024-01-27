@@ -18,26 +18,30 @@ gem install md_resume
 ## Usage
 
 ```
-Usage: md_resume command filename [options…]
+Usage: md_resume command filename [options...]
 
 Commands:
-serve         Start a local server to preview your resume
-build         Build your resume in html and pdf formats.
-generate      Generate a template with given name (defaults to markdown)
+serve                   Start a local server to preview your resume
+build                   Build your resume in html and pdf formats.
+generate                Generate a template with given file name,
+                        defaults to generating only a markdown template.
 
 Specific options:
-        --chrome-path=PATH      Path to Chrome executable
-        --no-pdf                Do not write pdf output
-        --no-html               Do not write html output
-    -p, --pdf-path=PATH         Path of pdf output
-    -h, --html-path=PATH        Path of html output
-        --css-path=PATH         Path of css inputs.
-        --server-port=PORT      Specify the localhost port number for the server
+        --chrome-path=PATH           Path to Chrome executable
+        --no-pdf                     Do [not] write pdf output
+        --[no-]html                  Do [not] write html output
+    -p, --pdf-path=PATH              Path of pdf output
+    -h, --html-path=PATH             Path of html output
+        --css-path=PATH              Path of css inputs.
+        --server-port=PORT           Specify the localhost port number for the server
         --serve-only
-    -v, --[no-]verbose          Run verbosely
+        --no-open                    Do not automatically open browser when starting server
+    -v, --[no-]verbose               Run verbosely
+        --[no-]generate-md           Generate markdown template.
+        --[no-]generate-css          Generate CSS template.
 
 Common options:
-        --help Show this message
+        --help                       Show this message
 ```
 
 ## Customization

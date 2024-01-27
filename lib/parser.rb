@@ -28,7 +28,8 @@ class Parser
       parser.separator 'Commands:'
       parser.separator "serve\t\t\tStart a local server to preview your resume"
       parser.separator "build\t\t\tBuild your resume in html and pdf formats."
-      parser.separator "generate\t\tGenerate a resume template with the given filename"
+      parser.separator "generate\t\tGenerate a template with given file name,"
+      parser.separator "\t\t\tdefaults to generating only a markdown template."
       parser.separator ''
       parser.separator 'Specific options:'
 
@@ -129,7 +130,7 @@ class Parser
     end
 
     def boolean_generate_md_option(parser)
-      parser.on('--no-generate-md', 'Do not generate markdown template.') do |v|
+      parser.on('--[no-]generate-md', 'Generate markdown template.') do |v|
         self.generate_md = v
       end
     end
