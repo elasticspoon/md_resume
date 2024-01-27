@@ -4,11 +4,11 @@ require 'resume_generator'
 require 'parser'
 require 'local-server'
 
-parser = Parser.new
-cli_opts = parser.parse(ARGV)
-
 command = ARGV.shift
 resume = ARGV.shift
+
+parser = Parser.new
+opts = parser.parse(command, ARGV)
 
 if resume.nil?
   puts parser.args
@@ -16,19 +16,19 @@ if resume.nil?
 end
 
 resume = File.expand_path(resume)
-cli_opts.input = resume
+opts.input = resume
 
 case command
 when 'serve'
-  generator = ResumeGenerator.new(cli_opts, is_cli: false)
-  server = Server.new(generator, cli_opts)
+  generator = ResumeGenerator.new(opts)
+  server = Server.new(generator, opts)
   server.start
 when 'build'
-  generator = ResumeGenerator.new(cli_opts)
+  generator = ResumeGenerator.new(opts)
   generator.write
 when 'generate'
-  generator = ResumeGenerator.new(cli_opts)
-  generator.write_template
+  generator = ResumeGenerator.new(opts)
+  generator.generate_template
 else
   puts parser.args
 end

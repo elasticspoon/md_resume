@@ -37,10 +37,9 @@ class ResumeGenerator
 
   LINUX_CHROME_EXECUTABLES = %w[google-chrome chrome chromium chromium-browser].freeze
 
-  def initialize(cli_opts, is_cli: true)
-    @opts = cli_opts
+  def initialize(opts)
+    @opts = opts
     @opts.chrome_path = guess_chrome_path if @opts.pdf && @opts.chrome_path.nil?
-    set_server_opts unless is_cli
   end
 
   def write
@@ -57,11 +56,19 @@ class ResumeGenerator
     exit
   end
 
-  def write_template
+  def generate_template
     curr = Pathname.new(__FILE__).dirname
-    relative = Pathname.new('../assets/sample-resume.md')
+    if @opts.generate_md
+      relative = Pathname.new('../assets/sample-resume.md')
+      template = File.expand_path(relative, curr)
+      FileUtils.copy_file(template, "#{@opts.input}.md")
+    end
+
+    return unless @opts.generate_css
+
+    relative = Pathname.new('../assets/defaults.css')
     template = File.expand_path(relative, curr)
-    FileUtils.copy_file(template, @opts.input)
+    FileUtils.copy_file(template, "#{@opts.input}.css")
   end
 
   private
@@ -121,7 +128,7 @@ class ResumeGenerator
   def make_pdf(html)
     html64 = Base64.encode64(html.encode('utf-8')).chomp
     prefix = opts.pdf_path.basename
-    tmp_dir = Pathname.new(Dir.pwd).join('tmp')
+    tmp_dir = Pathname.new('../tmp').expand_path(__FILE__)
     FileUtils.mkdir(tmp_dir) unless File.directory?(tmp_dir)
     options = pdf_opts_string(tmp_dir)
     create_output_dir(opts.pdf_path)

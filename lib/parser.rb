@@ -4,12 +4,13 @@ require 'pathname'
 class Parser
   class ScriptOptions
     attr_accessor :chrome_path, :html, :pdf, :css_path, :pdf_path, :html_path, :verbose, :input,
-                  :serve_only, :port
+                  :serve_only, :port, :open_browser, :generate_md, :generate_css
 
     def initialize
       self.chrome_path = nil
       self.html = true
       self.pdf = true
+      self.open_browser = true
       self.css_path = default_css_path
       self.pdf_path = Pathname.new('resume.pdf').expand_path
       self.html_path = Pathname.new('resume.html').expand_path
@@ -17,6 +18,8 @@ class Parser
       self.serve_only = false
       self.input = nil
       self.port = 3000
+      self.generate_md = true
+      self.generate_css = false
     end
 
     def define_options(parser)
@@ -37,8 +40,12 @@ class Parser
       specify_output_html_option(parser)
       specify_input_css_option(parser)
       specify_server_port_option(parser)
+      # TODO: remove this?
       boolean_serve_only_option(parser)
+      boolean_open_browser_option(parser)
       boolean_verbosity_option(parser)
+      boolean_generate_md_option(parser)
+      boolean_generate_css_option(parser)
       parser.separator ''
       parser.separator 'Common options:'
       # No argument, shows at tail.  This will print an options summary.
@@ -95,14 +102,14 @@ class Parser
 
     def boolean_pdf_option(parser)
       # Boolean switch.
-      parser.on('--no-pdf', 'Do not write pdf output') do |v|
+      parser.on('--no-pdf', 'Do [not] write pdf output') do |v|
         self.pdf = v
       end
     end
 
     def boolean_html_option(parser)
       # Boolean switch.
-      parser.on('--no-html', 'Do not write html output') do |v|
+      parser.on('--[no-]html', 'Do [not] write html output') do |v|
         self.html = v
       end
     end
@@ -111,6 +118,25 @@ class Parser
       # Boolean switch.
       parser.on('--serve-only') do |v|
         self.serve_only = v
+      end
+    end
+
+    def boolean_open_browser_option(parser)
+      # Boolean switch.
+      parser.on('--no-open', 'Do not automatically open browser when starting server') do |v|
+        self.open_browser = v
+      end
+    end
+
+    def boolean_generate_md_option(parser)
+      parser.on('--no-generate-md', 'Do not generate markdown template.') do |v|
+        self.generate_md = v
+      end
+    end
+
+    def boolean_generate_css_option(parser)
+      parser.on('--[no-]generate-css', 'Generate CSS template.') do |v|
+        self.generate_css = v
       end
     end
 
@@ -126,14 +152,12 @@ class Parser
   #
   # Return a structure describing the options.
   #
-  def parse(args)
-    # The options specified on the command line will be collected in
-    # *options*.
-
+  def parse(command, args)
     @options = ScriptOptions.new
     @args = OptionParser.new do |parser|
       @options.define_options(parser)
       parser.parse!(args)
+      set_command_defaults(command)
     rescue OptionParser::InvalidOption, OptionParser::MissingArgument => e
       puts e
       puts
@@ -143,5 +167,32 @@ class Parser
     @options
   end
 
+  def set_command_defaults(command)
+    case command
+    when 'serve'
+      serve_defaults
+    when 'build'
+      build_defaults
+    when 'generate'
+      generate_defaults
+    end
+  end
+
+  def serve_defaults
+    options.pdf = false
+    options.html = true
+    options.html_path = internal_tmp_dir.join('resume.html')
+  end
+
+  def build_defaults(parser); end
+
+  def generate_defaults(parser); end
+
   attr_reader :parser, :options, :args
+
+  private
+
+  def internal_tmp_dir
+    Pathname.new('../../tmp').expand_path(__FILE__)
+  end
 end
