@@ -1,0 +1,60 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Ruby Gem
+
+on:
+  # Manually publish
+  workflow_dispatch:
+  # Alternatively, publish whenever changes are merged to the `prod` branch.
+  push:
+    branches: [prod]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build + Publish Ruby ${{ matrix.ruby }}
+    strategy:
+      matrix:
+        ruby:
+          - "3.2.2"
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - run: bundle install
+
+      # - name: Publish to Github Packages
+      #   run: |
+      #     mkdir -p $HOME/.gem
+      #     touch $HOME/.gem/credentials
+      #     chmod 0600 $HOME/.gem/credentials
+      #     printf -- "---\n:github: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+      #     gem build *.gemspec
+      #     gem push --KEY github --host https://rubygems.pkg.github.com/${OWNER} *.gem
+      #   env:
+      #     GEM_HOST_API_KEY: "Bearer ${{secrets.GITHUB_TOKEN}}"
+      #     OWNER: ${{ github.repository_owner }}
+
+      - name: Publish to RubyGems
+        run: |
+          mkdir -p $HOME/.gem
+          touch $HOME/.gem/credentials
+          chmod 0600 $HOME/.gem/credentials
+          printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+          gem build *.gemspec
+          gem push *.gem
+        env:
+          GEM_HOST_API_KEY: "${{secrets.RUBYGEMS_AUTH_TOKEN}}"
