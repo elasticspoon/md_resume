@@ -5,19 +5,20 @@ require_relative 'lib/md_resume/version'
 Gem::Specification.new do |spec|
   spec.name = 'md_resume'
   spec.version = MdResume::VERSION
-  spec.authors = ['YuriBocharov']
+  spec.authors = ['elasticspoon']
   spec.email = ['quesadillaman@gmail.com']
 
   spec.summary = 'Ruby gem for creating resume from markdown file.'
-  spec.description = 'Write a resume in markdown, style it with CSS, distribute it as either HTML or PDF. Now with even faster feedback cycles, make changes and preview them immediately!</br></br><code>md-resume</code> is a resume generator written in Ruby styled with CSS. Instead of stopping at exclusively generation of a resume in HTML or PDF format, the project goes further in letting you perfect your resume. Running <code>resume.rb</code> in development mode will spin up a local server that will watch your changes to the resume styles and content. The server will live update an HTML preview of your resume letting you move quickly with changes and updates. The project uses <code>kramdown</code> to translate markdown to HTML, bringing with it additional inline markdown customization options.'
-  spec.homepage = 'https://github.com/elasticspoon/markdown-resume'
+  spec.description = 'Write a resume in markdown, style it with CSS,
+    edit it with a live server and distribute it as either HTML or PDF.'
+  spec.homepage = 'https://github.com/elasticspoon/md_resume'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 2.6.0'
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
   spec.metadata['homepage_uri'] = spec.homepage
-  spec.metadata['source_code_uri'] = 'https://github.com/elasticspoon/markdown-resume'
+  spec.metadata['source_code_uri'] = 'https://github.com/elasticspoon/md_resume'
   # spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
 
   # Specify which files should be added to the gem when it is released.
@@ -36,7 +37,4 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'filewatcher', '~> 2.1'
   spec.add_dependency 'kramdown', '~> 2.4'
   spec.add_dependency 'webrick', '~> 1.8'
-
-  # For more information and examples about making a new gem, check out our
-  # guide at: https://bundler.io/guides/creating_gem.html
 end
