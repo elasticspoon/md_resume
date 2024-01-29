@@ -185,9 +185,9 @@ class Parser
     options.html_path = internal_tmp_dir.join('resume.html')
   end
 
-  def build_defaults(parser); end
+  def build_defaults; end
 
-  def generate_defaults(parser); end
+  def generate_defaults; end
 
   attr_reader :parser, :options, :args
 
