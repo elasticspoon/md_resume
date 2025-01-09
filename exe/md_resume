@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'resume_generator'
-require 'parser'
-require 'local-server'
+require_relative '../lib/resume_generator'
+require_relative '../lib/parser'
+require_relative '../lib/local-server'
 
 command = ARGV.shift
 resume = ARGV.shift
